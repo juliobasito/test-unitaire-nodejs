@@ -4,6 +4,7 @@ const BadRequestError = require('../errors/bad-request');
 
 const db = require('../data/db');
 const courseListCollection = db.courseList;
+const uuidGenerator = require('./uuid-controller');
 
 router.post('/:id/list-item', (req, res, next) => {
 
@@ -36,6 +37,7 @@ router.post('/:id/list-item', (req, res, next) => {
     res.json({
         data: {
             article: article,
+            uuid: uuidGenerator.createUuid(),
             bought: false
         }
     })

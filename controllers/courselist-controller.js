@@ -5,6 +5,7 @@ const { find } = require('lodash')
 
 const db = require('../data/db')
 const courseListCollection = db.courseList
+const uuidGenerator = require('./uuid-controller')
 
 router.post('/', (req, res, next) => {
     if (!req.body.name) {
@@ -22,6 +23,7 @@ router.post('/', (req, res, next) => {
     const newCourseList = {
         id: courseListCollection.length + 1,
         name,
+        uuid: uuidGenerator.createUuid(),
         items: []
     };
 

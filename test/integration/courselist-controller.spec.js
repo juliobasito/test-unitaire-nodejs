@@ -12,8 +12,12 @@ const app = require('../../app');
 const courseListFixture = require('../fixtures/courseList');
 
 describe('CourselistController', () => {
-    beforeEach(() => { courseListFixture.up() });
-    afterEach(() => { courseListFixture.down() });
+    beforeEach(() => {
+        courseListFixture.up()
+    });
+    afterEach(() => {
+        courseListFixture.down()
+    });
 
     describe('When I create a courseList (POST /course-lists)', () => {
         it('should reject with a 400 when no name is given', () => {
@@ -31,7 +35,7 @@ describe('CourselistController', () => {
         it('should reject when name is not unique', () => {
             return request(app)
                 .post('/course-lists')
-                .send({ name: 'Toto' })
+                .send({name: 'Toto'})
                 .then((res) => {
                     res.status.should.equal(400)
                     res.body.should.eql({
@@ -48,19 +52,17 @@ describe('CourselistController', () => {
 
             return request(app)
                 .post('/course-lists')
-                .send({ name: mockName })
+                .send({name: mockName})
                 .then((res) => {
                     res.status.should.equal(200)
                     expect(res.body.data).to.be.an('object')
                     res.body.data.name.should.equal(mockName)
 
-                    const result = find(db.courseList, { name: mockName } )
+                    const result = find(db.courseList, {name: mockName})
                     result.should.not.be.empty
-                    result.should.eql({
-                        id: res.body.data.id,
-                        name: res.body.data.name,
-                        items: []
-                    })
+                    result.id.should.eql(res.body.data.id);
+                    result.name.should.eql(res.body.data.name);
+                    result.items.should.eql([]);
                 })
         })
     });
@@ -83,7 +85,7 @@ describe('CourselistController', () => {
             const idNumber = 1;
 
             return request(app)
-                .delete('/course-lists/'+ idNumber)
+                .delete('/course-lists/' + idNumber)
                 .then((res) => {
                     res.status.should.equal(200);
                     res.body.should.eql({
@@ -97,20 +99,17 @@ describe('CourselistController', () => {
 
     describe('When I print all the coursesList (GET /course-lists)', () => {
         it('should  succesfully print all the courseLists', () => {
-
-            let data = [
-                { id: 1, name: 'Toto', items: [{article: 'Mon item', bought: false}] },
-                { id: 2, name: 'Ma liste', items: [] }
-            ];
-
             return request(app)
                 .get('/course-lists')
                 .then((res) => {
                     res.status.should.equal(200);
-                    res.body.should.eql({
-                        data
-                    });
+                    res.body.data[0].id.should.eql(1);
+                    res.body.data[1].id.should.eql(2);
+                    res.body.data[0].name.should.eql('Toto')
+                    res.body.data[1].name.should.eql('Ma liste')
+                    res.body.data[0].uuid.should.not.be.empty
+                    res.body.data[1].uuid.should.not.be.empty
                 })
         })
     })
-});
+})
